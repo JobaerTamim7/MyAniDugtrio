@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # This cell is for import part
 
 # In[1]:
