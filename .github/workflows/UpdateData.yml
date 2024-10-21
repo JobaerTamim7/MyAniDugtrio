@@ -1,0 +1,38 @@
+name: Update all anime
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 */6 * * *"
+permissions:
+        contents: write
+jobs:
+    update_data:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v3
+
+            - name: Set up Python
+              uses: actions/setup-python@v3
+              with:
+                python-version: "3.12"
+
+            - name: Install dependencies
+              run: |
+                pyhton -m pip install --upgrade pip
+                pip install pipenv
+                pipenv install --system
+            
+            - name: Update Data
+              run: python Project/Scrapper.py
+
+            - name: Commit and Push
+              run: |
+                timestamp=$(date +"%Y-%m-%d at %H o'clock %Z")  
+                git config --global user.email "actions@github.com"
+                git config --global user.name "GitHub Actions"
+                git add .
+                git commit -m "Updated data on $timestamp"
+                git push
+              env:
+                GITHUB_TOCKEN: ${{ secrets.GITHUB_TOKEN }}
